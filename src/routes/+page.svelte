@@ -23,14 +23,16 @@
     });
 
     </script>
-<h1> Mike Wazowski</h1>
+<h1> Leiton Estrada</h1>
    
-<img src="./images/my_image.jpeg" alt="mike" width="500px">
+<img src="./images/Imagen001.jpg" alt="mike" width="500px">
     
-<p>Michael "Mike" Thomas Wazowski is the deuteragonist of the 2001 Disney Pixar animated film Monsters, Inc. and the protagonist of its 2013 prequel.
-    Depicted as a diminutive, one-eyed monster with a wisecracking veneer, Mike is an employee of Monsters, Incorporated, where he works closely with his longtime partner/best friend Sulley.
-    Mike's world gets turned upside down when a human girl (nicknamed "Boo") enters the monster world.
-    Teaming up with Sulley to return Boo to her world, Mike uncovers a company conspiracy and helps solve an energy crisis that plagues the entire city of Monstropolis
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lacinia accumsan euismod.
+    Nunc consequat accumsan mi, vitae scelerisque lectus. Aenean aliquam nibh vestibulum tempus pharetra.
+    Curabitur finibus risus nibh, sit amet bibendum ipsum placerat quis. Nam quis nulla id ipsum maximus molestie.
+    In dolor magna, facilisis eget mi ut, condimentum sollicitudin neque.
+    Sed eu molestie ipsum, a aliquam risus. Morbi consequat imperdiet elit, convallis viverra mi faucibus ac.
+    Nulla facilisi. Proin et auctor justo. Etiam tellus felis, fermentum et ipsum eu, porta aliquet tortor.
 </p>
 
 <h2>Latest projects</h2>
