@@ -2,6 +2,8 @@
 import * as d3 from "d3";
 import { onMount } from "svelte";
 
+let width = 1000, height = 600;
+
 let data = [];
 let commits = [];
 
@@ -40,10 +42,22 @@ onMount(async () => {
     return ret;
 	});
 
-	console.log(commits)
+	//console.log(commits)
 });
 
+$: minDate = d3.min(commits.map(d => d.date));
+$: maxDate = d3.max(commits.map(d => d.date));
+$: maxDatePlusOne = new Date(maxDate);
+$: maxDatePlusOne.setDate(maxDatePlusOne.getDate() + 1);
 
+$: xScale = d3.scaleTime()
+            .domain([minDate, maxDatePlusOne])
+            .range([0, width])
+            .nice();
+
+$: yScale = d3.scaleLinear()
+            .domain([24, 0])
+            .range([height, 0]);
 
 </script>
 <svelte:head>
@@ -52,3 +66,61 @@ onMount(async () => {
 <h1>Meta</h1>
 <p>This page includes stats about the code of this website</p>
 <p>Total lines of code: {data.length}</p>
+
+
+<!-- Step 1.3 -->
+<section>
+    <h2>Summary</h2>
+    <dl class="stats">
+    <dt>Total <abbr title="Lines of code">LOC</abbr></dt>
+    <dd>{data.length}</dd>
+    <dt>Files</dt>
+    <dd>{d3.groups(data, d => d.file).length}</dd>
+    <dt>Commits</dt>
+    <dd>{d3.groups(data, d => d.commit).length}</dd>
+    </dl>
+
+    <svg viewBox="0 0 {width} {height}">
+        <!-- scatterplot will go here -->
+        <g class="dots">
+            {#each commits as commit, index }
+                <circle
+                    cx={ xScale(commit.datetime) }
+                    cy={ yScale(commit.hourFrac) }
+                    r="5"
+                    fill="steelblue"
+                />
+            {/each}
+            </g>
+    </svg>
+</section>
+
+
+
+<style>
+    dl{
+        display: grid;
+        grid-template-columns: auto;
+    }
+    dt{
+        grid-row: 1;
+        font-family: inherit;
+        font-weight: bold;
+        color: var(--border-gray);
+        text-transform: uppercase;
+    }
+    dd{
+        font-family: inherit;
+        font-weight: bold;
+    }
+    section{
+        border-width:0.15em;
+        border-style:solid;
+        border-color:var(--border-gray);
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+    svg {
+        overflow: visible;
+    }
+</style>
