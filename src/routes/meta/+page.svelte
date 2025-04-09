@@ -3,12 +3,28 @@ import * as d3 from "d3";
 import { onMount } from "svelte";
 
 let width = 1000, height = 600;
+let margin = {top: 10, right: 10, bottom: 30, left: 20};
 
 let data = [];
 let commits = [];
 
+let usableArea = {
+    top: margin.top,
+    right: width - margin.right,
+    bottom: height - margin.bottom,
+    left: margin.left
+};
+usableArea.width = usableArea.right - usableArea.left;
+usableArea.height = usableArea.bottom - usableArea.top;
+
+let xAxis, yAxis;
+let yAxisGridlines;
+
+let hoveredIndex = -1;
+$: hoveredCommit = commits[hoveredIndex] ?? hoveredCommit ?? {};
+
 onMount(async () => {
-	data = await d3.csv("/loc.csv", row => ({
+	data = await d3.csv("./loc.csv", row => ({
     ...row,
     line: Number(row.line), // or just +row.line
     depth: Number(row.depth),
@@ -59,6 +75,20 @@ $: yScale = d3.scaleLinear()
             .domain([24, 0])
             .range([height, 0]);
 
+$: {
+    d3.select(xAxis).call(d3.axisBottom(xScale));
+    // d3.select(yAxis).call(d3.axisLeft(yScale));
+    d3.select(yAxis).call(d3.axisLeft(yScale).tickFormat(d => String(d % 24).padStart(2, "0") + ":00"));
+}
+
+$: {
+    d3.select(yAxisGridlines).call(
+        d3.axisLeft(yScale)
+          .tickFormat("")
+          .tickSize(-usableArea.width)
+    );
+}
+
 </script>
 <svelte:head>
 <title>Meta</title>
@@ -80,6 +110,7 @@ $: yScale = d3.scaleLinear()
     <dd>{d3.groups(data, d => d.commit).length}</dd>
     </dl>
 
+    <h3>Commits by time of day</h3>
     <svg viewBox="0 0 {width} {height}">
         <!-- scatterplot will go here -->
         <g class="dots">
@@ -92,6 +123,12 @@ $: yScale = d3.scaleLinear()
                 />
             {/each}
             </g>
+
+        <g transform="translate(0, {usableArea.bottom})" bind:this={xAxis} />
+        <g transform="translate({usableArea.left}, 0)" bind:this={yAxis} />
+        
+        <g class="gridlines" transform="translate({usableArea.left}, 0)" bind:this={yAxisGridlines} />
+        
     </svg>
 </section>
 
@@ -122,5 +159,8 @@ $: yScale = d3.scaleLinear()
     }
     svg {
         overflow: visible;
+    }
+    .gridlines {
+    stroke-opacity: .2;
     }
 </style>
