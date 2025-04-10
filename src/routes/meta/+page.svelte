@@ -68,16 +68,16 @@ $: maxDatePlusOne.setDate(maxDatePlusOne.getDate() + 1);
 
 $: xScale = d3.scaleTime()
             .domain([minDate, maxDatePlusOne])
-            .range([0, width])
+            .range([usableArea.left, usableArea.right])
             .nice();
 
 $: yScale = d3.scaleLinear()
             .domain([24, 0])
-            .range([height, 0]);
+            .range([usableArea.bottom, usableArea.top]);
 
 $: {
     d3.select(xAxis).call(d3.axisBottom(xScale));
-    // d3.select(yAxis).call(d3.axisLeft(yScale));
+    d3.select(yAxis).call(d3.axisLeft(yScale));
     d3.select(yAxis).call(d3.axisLeft(yScale).tickFormat(d => String(d % 24).padStart(2, "0") + ":00"));
 }
 
@@ -116,19 +116,22 @@ $: {
         <g class="dots">
             {#each commits as commit, index }
                 <circle
+                
                     cx={ xScale(commit.datetime) }
                     cy={ yScale(commit.hourFrac) }
                     r="5"
                     fill="steelblue"
                 />
+                
             {/each}
             </g>
 
         <g transform="translate(0, {usableArea.bottom})" bind:this={xAxis} />
-        <g transform="translate({usableArea.left}, 0)" bind:this={yAxis} />
-        
+        <g transform="translate({usableArea.left}, 0)" bind:this={yAxis} />        
         <g class="gridlines" transform="translate({usableArea.left}, 0)" bind:this={yAxisGridlines} />
         
+        
+
     </svg>
 </section>
 
